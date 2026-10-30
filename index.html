@@ -387,7 +387,7 @@
   .prof-tab i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
   .prof-tab:hover, .prof-tab:focus-visible { box-shadow: inset 0 0 0 1px var(--c); outline: none; }
   .prof-tab[aria-selected="true"] { background: color-mix(in srgb, var(--c) 16%, transparent); box-shadow: inset 0 0 0 2px var(--c); }
-  .prof-copy { margin-top: 22px; min-height: 12.5em; }
+  .prof-copy { margin-top: 22px; min-height: 8.5em; }
   .prof-copy .who { font-family: var(--hud); font-size: .58rem; letter-spacing: .24em; text-transform: uppercase; color: var(--pc, var(--accent)); }
   .prof-copy h3 { margin-top: 8px; font-family: var(--display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: -0.01em; text-wrap: balance; }
   .prof-copy p { margin-top: 10px; color: var(--muted); line-height: 1.55; max-width: 52ch; }
@@ -467,7 +467,7 @@
   .ph-runs { display: flex; align-items: center; gap: 7px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; color: rgba(255,255,255,.75); }
   .ph-runs span { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: rgba(140,255,61,.14); border: 1px solid rgba(140,255,61,.55); }
 
-  @media (max-width: 620px) { .prof-copy { min-height: 16em; } }
+  @media (max-width: 620px) { .prof-copy { min-height: 11em; } }
   @media (max-width: 400px) { .phone { height: 560px; } }
 
   /* desktop window for the band / venue / agent profiles */
@@ -1130,7 +1130,7 @@
         ph.setAttribute('aria-labelledby', 'pt-' + r.key);
         ph.innerHTML = `<img src="${SHOTS[r.key]}" alt="${ALT[r.key]}">`; ph.classList.remove('swap'); void ph.offsetWidth; ph.classList.add('swap');
       }
-      copy.innerHTML = `<p class="who">${r.label} profile</p><h3>${r.head}</h3><p>${r.copy}</p><ul>${r.points.map(p => `<li>${p}</li>`).join('')}</ul>`;
+      copy.innerHTML = `<p class="who">${r.label} profile</p><h3>${r.head}</h3><ul>${r.points.map(p => `<li>${p}</li>`).join('')}</ul>`;
     };
     const loop = () => { clearTimeout(timer); if (auto) timer = setTimeout(() => { show((cur + 1) % ROLES.length); loop(); }, 6000); };
     btns.forEach((b, k) => {
