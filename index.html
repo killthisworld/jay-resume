@@ -245,6 +245,7 @@
 
   .brand .sub { white-space: nowrap; }
   .brand .sub .star { font-style: normal; color: rgb(var(--dot)); text-shadow: 0 0 6px rgba(var(--dot),.8); font-size: 1.35em; line-height: 0; vertical-align: -.08em; margin: 0 .5em 0 .38em; letter-spacing: 0; }
+  .hire-one { display: grid; width: 100%; max-width: 620px; margin-inline: auto; }
   /* two-planet home */
   main.system { max-width: 760px; margin-top: 64px; }
   main.system .planet { --size: clamp(160px, 21vw, 200px); }
@@ -835,7 +836,7 @@
     </section>
 
     <p class="sec-label">Hire me</p>
-    <section class="grid2">
+    <section class="hire-one">
       <article class="panel svc">
         <div class="svc-top"><span class="svc-icon"><svg><use href="#i-rocket"/></svg></span><h3>Your startup's developer<small>Personal developer</small></h3></div>
         <p>One developer who builds your product and stays with it, instead of an agency hand-off.</p>
@@ -845,15 +846,6 @@
           <li>Internal tools and the systems behind them</li>
         </ul>
         <a class="cta" href="#" data-book="dev-project">Start a project &#8599;</a>
-      </article>
-      <article class="panel">
-        <h3 class="sec-label" style="font-size:.6rem">Skills &amp; Stack</h3>
-        <div class="skills">
-          <div><h4>Languages</h4><div class="chips"><span class="chip">TypeScript</span><span class="chip">JavaScript</span><span class="chip">SQL &amp; PL/pgSQL</span><span class="chip">HTML &amp; CSS</span></div></div>
-          <div><h4>Backend &amp; data</h4><div class="chips"><span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">Row-level security</span><span class="chip">Auth</span><span class="chip">File storage</span></div></div>
-          <div><h4>Server &amp; automation</h4><div class="chips"><span class="chip">Edge Functions (Deno)</span><span class="chip">Webhooks</span><span class="chip">Scheduled jobs (pg_cron)</span><span class="chip">Transactional email</span></div></div>
-          <div><h4>Integrations</h4><div class="chips"><span class="chip">Eventbrite API &amp; OAuth</span><span class="chip">Google Drive API</span><span class="chip">Cal.com API</span></div></div>
-        </div>
       </article>
     </section>
 
