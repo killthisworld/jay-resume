@@ -597,7 +597,10 @@
   #home main.system { flex: 1; margin-top: 0; align-content: center; padding-block: 32px; }
   #home footer { margin-top: 0; }
   /* balance the header so the planets sit in the true middle of the screen */
-  #home::after { content: ""; flex: none; height: var(--hh, 0px); }
+  #home > header { padding-top: 28px; }
+  .home-book { flex: none; min-height: var(--hh, 0px); width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+  .home-book .book-main { margin-top: 0; min-width: 200px; }
+  @media (max-width: 620px) { #home > header { padding-top: 18px; } .home-book .book-main { width: min(260px, 100%); } }
   @media (max-width: 620px) { #home { min-height: calc(100svh - 56px); } #home main.system { padding-block: 20px; } }
   .sec-label { justify-content: center; text-align: center; }
   .sec-label::before { content: ""; flex: 1; height: 1px; background: linear-gradient(270deg, var(--ring), transparent); }
@@ -695,7 +698,6 @@
   <header>
     <h1>Jay Cruse</h1>
     <p class="titles"><span>Audio Engineer</span><span class="dot">&#10022;</span><span>Web / App Developer</span></p>
-    <button type="button" class="cta book-main" data-book="">Book a session</button>
   </header>
 
   <main class="system">
@@ -710,6 +712,8 @@
       <div class="sub">Startups &middot; Web<br>Mobile &middot; Systems</div>
     </a>
   </main>
+
+  <div class="home-book"><button type="button" class="cta book-main" data-book="">Book Now</button></div>
 </div>
 
 <!-- ================= AUDIO ENGINEER ================= -->
