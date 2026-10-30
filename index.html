@@ -588,6 +588,27 @@
   .gw-room > span { font: 600 .58rem "IBM Plex Mono", monospace; color: var(--c); }
   .dk-card .ph-ring span { width: 21px; height: 21px; font-size: .45rem; }
 
+
+  /* ===== centering pass ===== */
+  #home { min-height: calc(100svh - 112px); justify-content: flex-start; }
+  #home main.system { flex: 1; margin-top: 0; align-content: center; padding-block: 32px; }
+  #home footer { margin-top: 0; }
+  /* balance the header so the planets sit in the true middle of the screen */
+  #home::after { content: ""; flex: none; height: var(--hh, 0px); }
+  @media (max-width: 620px) { #home { min-height: calc(100svh - 56px); } #home main.system { padding-block: 20px; } }
+  .sec-label { justify-content: center; text-align: center; }
+  .sec-label::before { content: ""; flex: 1; height: 1px; background: linear-gradient(270deg, var(--ring), transparent); }
+  .nights { display: flex; flex-wrap: wrap; justify-content: center; }
+  .night { width: min(320px, 100%); }
+  .feat-head { justify-items: center; text-align: center; }
+  .prof-tabs { justify-content: center; }
+  .prof-copy { text-align: center; }
+  .prof-copy p { margin-inline: auto; }
+  .prof-copy ul { justify-content: center; text-align: left; }
+  .demo-note { text-align: center; }
+  .res { margin-inline: auto; }
+  .sub-footer { align-self: center; }
+
   /* entrance */
   #home header, #home .brand, #home footer { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
   #home .brand:nth-child(1) { animation-delay: .15s; } #home .brand:nth-child(2) { animation-delay: .3s; }
@@ -686,10 +707,6 @@
       <div class="sub">Startups &middot; Web<br>Mobile &middot; Systems</div>
     </a>
   </main>
-
-  <footer>
-    <p class="copy">&copy; 2026 Jay Cruse</p>
-  </footer>
 </div>
 
 <!-- ================= AUDIO ENGINEER ================= -->
@@ -744,10 +761,6 @@
       <a class="cta" href="#" data-book="consult" data-prefill="consult-type=Audio%20consultation">Book an audio consultation &#8599;</a>
     </section>
   </div>
-
-  <footer class="sub-footer">
-    <p class="copy" style="margin-top:0">&copy; 2026 Jay Cruse</p>
-  </footer>
 </div>
 
 <!-- ================= WEB & APP DEVELOPER ================= -->
@@ -804,10 +817,6 @@
 
 
   </div>
-
-  <footer class="sub-footer">
-    <p class="copy" style="margin-top:0">&copy; 2026 Jay Cruse</p>
-  </footer>
 </div>
 
 <dialog class="chooser" id="chooser" aria-labelledby="ch-title">
@@ -1129,6 +1138,13 @@
       });
     });
     show(0); loop();
+  })();
+
+  // measure the home header so the planets can sit in the middle of the screen
+  (() => {
+    const home = document.getElementById('home'), head = home.querySelector('header');
+    const fit = () => home.style.setProperty('--hh', head.offsetHeight + 'px');
+    fit(); addEventListener('resize', fit); if (window.ResizeObserver) new ResizeObserver(fit).observe(head);
   })();
 
   // booking wiring
