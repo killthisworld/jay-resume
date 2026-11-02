@@ -56,7 +56,7 @@
     padding-block: 64px 48px; padding-inline: 16px;
     overflow-x: hidden;
   }
-  body.on-audio { --accent: #7b7af7; --accent-rgb: 123,122,247; }
+  body.on-audio, body.on-multi { --accent: #7b7af7; --accent-rgb: 123,122,247; }
   body.on-dev   { --accent: #8cff3d; --accent-rgb: 140,255,61; }
   body.on-dev .cta:not(.ghost):not([aria-disabled]) { color: #0d0d0d; }
   #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -329,6 +329,33 @@
   .nzoom #nzoom-body { display: grid; gap: 14px; max-height: calc(100dvh - 32px); overflow-y: auto; border-radius: 20px; }
   .nzoom .night { width: 100%; }
   @media (max-width: 620px) { .ncal { padding: 14px 12px 12px; } .ncal-dow, .ncal-grid { gap: 4px; } .ncal-day small { display: none; } .ncal-day b { font-size: .82rem; } }
+
+  /* live show multitracks */
+  .svc-wide { grid-column: 1 / -1; }
+  .mt { max-width: 760px; margin-inline: auto; }
+  .mt-step { padding: 20px 22px; transition: opacity .2s; }
+  .mt-step[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .mt-n { font: 600 .66rem var(--hud); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .mt-n b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: .78rem; color: #0b0a1e; background: var(--accent); box-shadow: 0 0 12px rgba(var(--accent-rgb),.6); }
+  .mt-ncal { max-width: 440px; margin: 0 auto; padding: 0; background: none; box-shadow: none; }
+  .mt-go .cta { flex: none; white-space: nowrap; }
+  .mt-go .price-note { font-size: .8rem; color: var(--faint); line-height: 1.5; }
+  .ncal-day.sel { background: #fff; color: #0b0a1e; box-shadow: 0 0 0 2px var(--accent), 0 0 26px rgba(var(--accent-rgb),.9); }
+  .mt-picked { color: var(--muted); font-size: .92rem; line-height: 1.5; margin-bottom: 12px; }
+  .mt-picked b { color: var(--ink); }
+  .mt-chips, .mt-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mt-list { margin-top: 12px; }
+  .mt-chip { padding: 10px 16px; border-radius: 999px; border: 0; cursor: pointer; font: 600 .92rem var(--body); color: var(--ink); background: rgba(238,240,255,.05); box-shadow: inset 0 0 0 1px var(--ring); }
+  .mt-chip[aria-checked="true"] { color: #0b0a1e; background: var(--accent); box-shadow: 0 0 16px rgba(var(--accent-rgb),.55); }
+  .mt-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .mt-opt { text-align: left; padding: 14px 16px; border-radius: 14px; border: 0; cursor: pointer; font: inherit; color: var(--ink); background: rgba(238,240,255,.04); box-shadow: inset 0 0 0 1px var(--ring); display: grid; gap: 4px; }
+  .mt-opt b { font-weight: 600; }
+  .mt-opt span { font-size: .84rem; color: var(--muted); line-height: 1.4; }
+  .mt-opt[aria-checked="true"] { background: rgba(var(--accent-rgb),.14); box-shadow: inset 0 0 0 2px var(--accent), 0 0 20px rgba(var(--accent-rgb),.3); }
+  .mt-go { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .mt-sum { font-size: .95rem; line-height: 1.5; margin-bottom: 6px; }
+  .mt-go .cta[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  @media (max-width: 620px) { .mt-opts { grid-template-columns: minmax(0, 1fr); } .mt-go { flex-direction: column; align-items: stretch; } .mt-step { padding: 16px 14px; } }
   /* two-planet home */
   main.system { max-width: 760px; margin-top: 64px; }
   main.system .planet { --size: clamp(160px, 21vw, 200px); }
@@ -878,6 +905,11 @@
         <p class="price-note">Paid in full before the event.</p>
         <button type="button" class="cta" data-scroll="shadow-nights">See upcoming shadow nights &#8595;</button>
       </article>
+      <article class="panel svc svc-wide">
+        <div class="svc-top"><span class="svc-icon"><svg><use href="#i-layers"/></svg></span><h3>Live Show Multitracks<small>From a show you played</small></h3></div>
+        <p>Played a show I engineered? Get the audio from your set: the raw stems, a left/right stereo recording, a mix, or a full mix and master.</p>
+        <a class="cta" href="#multitracks">Request your show's audio &#8594;</a>
+      </article>
     </section>
 
     <p class="sec-label" id="shadow-nights">Upcoming shadow nights</p>
@@ -886,6 +918,41 @@
     <section class="panel contact">
       <div><h3>Have a personal project?</h3><p>Book a 20-minute consultation ($10) to discuss what's needed to bring it to life.</p></div>
       <a class="cta" href="#" data-book="consult">Book an audio consultation &#8599;</a>
+    </section>
+  </div>
+</div>
+
+<!-- ================= LIVE SHOW MULTITRACKS ================= -->
+<div class="view" id="multipage" hidden>
+  <a class="back" href="#audio" data-to="#audio">&larr; Back to Audio Engineer</a>
+  <header class="sub-head">
+    <p class="coords"><b>&#9679;</b> Live show multitracks <b>&#9679;</b></p>
+    <h2>Get the audio from your show</h2>
+    <p class="tag">Pick the show you played, your band, and what you want. Your request comes straight to me.</p>
+  </header>
+  <div class="res mt">
+    <section class="panel mt-step">
+      <p class="mt-n"><b>1</b> Pick your show</p>
+      <div id="mt-cal"></div>
+    </section>
+    <section class="panel mt-step" id="mt-s2" aria-disabled="true">
+      <p class="mt-n"><b>2</b> Which band were you?</p>
+      <p class="mt-picked" id="mt-show-label">Choose a show first.</p>
+      <div class="mt-chips" id="mt-bands" role="radiogroup" aria-label="Your band"></div>
+    </section>
+    <section class="panel mt-step" id="mt-s3" aria-disabled="true">
+      <p class="mt-n"><b>3</b> What do you want?</p>
+      <div class="mt-opts" role="radiogroup" aria-label="What you want">
+        <button type="button" class="mt-opt" data-v="Stems only" role="radio" aria-checked="false"><b>Stems only</b><span>Every channel from the board as its own track, for you or your engineer to mix.</span></button>
+        <button type="button" class="mt-opt" data-v="Left/right stereo only" role="radio" aria-checked="false"><b>Left / right stereo</b><span>The stereo recording straight from the board, as it sounded in the room.</span></button>
+        <button type="button" class="mt-opt" data-v="Mixing" role="radio" aria-checked="false"><b>Mixing</b><span>I mix your set from the multitracks.</span></button>
+        <button type="button" class="mt-opt" data-v="Full mix + master" role="radio" aria-checked="false"><b>Full mix + master</b><span>Mixed and mastered, ready to release.</span></button>
+      </div>
+    </section>
+    <section class="panel mt-step mt-go" id="mt-s4" aria-disabled="true">
+      <div><p class="mt-n"><b>4</b> Send your request</p><p class="mt-sum" id="mt-sum">Finish the steps above.</p>
+      <p class="price-note">You'll add your name and email and pick the date you'd like it by. I'll confirm the band is cleared for the audio, then reply with a price.</p></div>
+      <a class="cta" id="mt-send" href="#" aria-disabled="true">Send request &#8599;</a>
     </section>
   </div>
 </div>
@@ -959,6 +1026,7 @@
     <li><a class="a" href="#" data-book="live-event"><span class="ch-ic"><svg><use href="#i-live"/></svg></span><span class="ch-txt"><b>Live Audio Engineer</b><span>Sound for your event</span></span><span class="ch-go">&#8599;</span></a></li>
     <li><a class="a" href="#" data-book="studio-time"><span class="ch-ic"><svg><use href="#i-mic"/></svg></span><span class="ch-txt"><b>Studio Time</b><span>Recording at Klean Studios</span></span><span class="ch-go">&#8599;</span></a></li>
     <li><a class="a" href="#" data-book="mix-master"><span class="ch-ic"><svg><use href="#i-wave"/></svg></span><span class="ch-txt"><b>Mixing &amp; Mastering</b><span>Per project &middot; pick your due date</span></span><span class="ch-go">&#8599;</span></a></li>
+    <li><a class="a" href="#multitracks" data-close><span class="ch-ic"><svg><use href="#i-layers"/></svg></span><span class="ch-txt"><b>Live Show Multitracks</b><span>Audio from a show you played</span></span><span class="ch-go">&#8594;</span></a></li>
     <li><a class="a" href="#" data-book="shadow"><span class="ch-ic"><svg><use href="#i-headphones"/></svg></span><span class="ch-txt"><b>Hands-On Shadowing</b><span>Learn beside me at a live gig</span></span><span class="ch-go">&#8599;</span></a></li>
   </ul></div>
   <div class="ch-group"><h3>Development</h3><ul class="ch-list">
@@ -976,7 +1044,7 @@
      e.g. base: 'https://cal.com/jaycruse'  ->  https://cal.com/jaycruse/live-event, /studio-time, ... */
   const BOOKING = {
     base: 'https://cal.com/jaycruse',
-    types: { 'live-event': 'live-audio-engineer', 'studio-time': 'studio-time', 'mix-master': 'mixing-mastering', 'shadow': 'hands-on-shadowing', 'dev-project': 'web-app-development', 'consult': 'consultation' }
+    types: { 'live-event': 'live-audio-engineer', 'studio-time': 'studio-time', 'mix-master': 'mixing-mastering', 'shadow': 'hands-on-shadowing', 'dev-project': 'web-app-development', 'consult': 'consultation', 'multitracks': 'live-multitracks' }
   };
   /* ===== Fill in real links here. A link left as '' shows as "coming soon" or does nothing. ===== */
   const LINKS = {
@@ -1084,6 +1152,76 @@
     grid.addEventListener('click', e => { const b = e.target.closest('.ncal-day.on'); if (!b) return; body.innerHTML = byDate[b.dataset.date].map(card).join(''); dlg.showModal(); });
     dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('.zoom-x')) dlg.close(); });
     draw();
+  })();
+
+
+  /* ===== Shows I've worked (for live multitrack requests). Newest can go anywhere; past dates only show up. ===== */
+  const SHOWS_WORKED = [
+    { name: 'Halloween at Kirk', date: '2026-10-31', venue: 'The Spot on Kirk', city: 'Roanoke, VA',
+      bands: ['Clover-Lynn', 'Lamplight', 'Ramona Martinez'] }
+  ];
+
+  (() => {
+    const pad = n => String(n).padStart(2, '0');
+    const now = new Date(), today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const MONTH = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const fmt = d => { const [y, m, dd] = d.split('-').map(Number); return `${MONTH[m - 1].slice(0, 3)} ${dd}, ${y}`; };
+    const shows = SHOWS_WORKED.filter(s => s.date <= today).sort((a, b) => a.date.localeCompare(b.date));
+    const cal = document.getElementById('mt-cal');
+    const st = { show: null, band: null, opt: null };
+    const s2 = document.getElementById('mt-s2'), s3 = document.getElementById('mt-s3'), s4 = document.getElementById('mt-s4');
+    const bandsEl = document.getElementById('mt-bands'), label = document.getElementById('mt-show-label'), sum = document.getElementById('mt-sum'), send = document.getElementById('mt-send');
+    const base = BOOKING.base.replace(/\/+$/, '');
+    const update = () => {
+      s2.setAttribute('aria-disabled', !st.show); s3.setAttribute('aria-disabled', !st.band); s4.setAttribute('aria-disabled', !st.opt);
+      document.querySelectorAll('.mt-opt').forEach(b => b.setAttribute('aria-checked', b.dataset.v === st.opt));
+      if (st.show && st.band && st.opt) {
+        const showTxt = `${st.show.name} · ${fmt(st.show.date)} · ${st.show.venue}`;
+        sum.innerHTML = `<b>${esc(st.band)}</b> at ${esc(showTxt)}<br>${esc(st.opt)}`;
+        const q = new URLSearchParams({ show: showTxt, band: st.band, deliverable: st.opt });
+        send.href = base ? `${base}/${BOOKING.types.multitracks}?${q}` : '#'; send.target = '_blank'; send.rel = 'noopener'; send.removeAttribute('aria-disabled');
+      } else { sum.textContent = 'Finish the steps above.'; send.href = '#'; send.setAttribute('aria-disabled', 'true'); send.removeAttribute('target'); }
+    };
+    send.addEventListener('click', e => { if (send.getAttribute('aria-disabled')) e.preventDefault(); });
+    const pickShow = sh => {
+      st.show = sh; st.band = sh.bands.length === 1 ? sh.bands[0] : null;
+      label.innerHTML = `<b>${esc(sh.name)}</b> &middot; ${fmt(sh.date)} &middot; ${esc(sh.venue)}, ${esc(sh.city)}`;
+      bandsEl.innerHTML = sh.bands.map(b => `<button type="button" class="mt-chip" role="radio" aria-checked="${b === st.band}">${esc(b)}</button>`).join('');
+      bandsEl.querySelectorAll('.mt-chip').forEach(c => c.addEventListener('click', () => {
+        st.band = c.textContent; bandsEl.querySelectorAll('.mt-chip').forEach(x => x.setAttribute('aria-checked', x === c)); update();
+      }));
+      cal.querySelectorAll('.ncal-day.on').forEach(d => d.classList.toggle('sel', d.dataset.date === sh.date));
+      update();
+    };
+    document.querySelectorAll('.mt-opt').forEach(b => b.addEventListener('click', () => { st.opt = b.dataset.v; update(); }));
+    if (!shows.length) { cal.innerHTML = '<p class="mt-picked">No shows are listed yet. Book an audio consultation and tell me which show you played.</p>'; update(); return; }
+    const byDate = {}; shows.forEach(s => (byDate[s.date] = byDate[s.date] || []).push(s));
+    const months = [...new Set(shows.map(s => s.date.slice(0, 7)))];
+    let mi = months.length - 1;
+    cal.innerHTML = `<div class="ncal mt-ncal"><div class="ncal-head"><button type="button" class="ncal-nav" data-d="-1" aria-label="Previous month">&#8249;</button><h4 aria-live="polite"></h4><button type="button" class="ncal-nav" data-d="1" aria-label="Next month">&#8250;</button></div>
+      <div class="ncal-dow" aria-hidden="true">${['S','M','T','W','T','F','S'].map(d => `<span>${d}</span>`).join('')}</div><div class="ncal-grid"></div>
+      <div class="mt-list"></div></div>`;
+    const grid = cal.querySelector('.ncal-grid'), title = cal.querySelector('h4'), navs = [...cal.querySelectorAll('.ncal-nav')], list = cal.querySelector('.mt-list');
+    const draw = () => {
+      const [y, m] = months[mi].split('-').map(Number), first = new Date(y, m - 1, 1), days = new Date(y, m, 0).getDate();
+      title.textContent = `${MONTH[m - 1]} ${y}`;
+      let html = '<span class="ncal-pad"></span>'.repeat(first.getDay());
+      for (let d = 1; d <= days; d++) {
+        const key = `${y}-${pad(m)}-${pad(d)}`, ns = byDate[key];
+        html += ns ? `<button type="button" class="ncal-day on${st.show && st.show.date === key ? ' sel' : ''}" data-date="${key}" aria-label="${esc(ns.map(n => n.name).join(', '))}, ${MONTH[m - 1]} ${d}"><b>${d}</b><small>${esc(ns[0].name)}</small></button>`
+                   : `<span class="ncal-day"><b>${d}</b></span>`;
+      }
+      grid.innerHTML = html; navs[0].disabled = mi === 0; navs[1].disabled = mi === months.length - 1; list.innerHTML = '';
+    };
+    navs.forEach(b => b.addEventListener('click', () => { mi = Math.min(months.length - 1, Math.max(0, mi + +b.dataset.d)); draw(); }));
+    grid.addEventListener('click', e => {
+      const b = e.target.closest('.ncal-day.on'); if (!b) return; const ns = byDate[b.dataset.date];
+      if (ns.length === 1) { pickShow(ns[0]); return; }
+      list.innerHTML = ns.map((n, i) => `<button type="button" class="mt-chip" data-i="${i}">${esc(n.name)} &middot; ${esc(n.venue)}</button>`).join('');
+      list.querySelectorAll('.mt-chip').forEach(c => c.addEventListener('click', () => pickShow(ns[+c.dataset.i])));
+    });
+    draw(); if (shows.length === 1) pickShow(shows[0]); else update();
   })();
 
   document.querySelectorAll('[data-scroll]').forEach(b => b.addEventListener('click', () => {
@@ -1394,7 +1532,7 @@
   })();
 
   (() => {
-    const views = { '': 'home', '#audio': 'audiopage', '#dev': 'devpage' };
+    const views = { '': 'home', '#audio': 'audiopage', '#dev': 'devpage', '#multitracks': 'multipage' };
     const show = () => {
       const id = views[location.hash] || 'home';
       Object.values(views).forEach(v => { document.getElementById(v).hidden = v !== id; });
@@ -1404,8 +1542,10 @@
       window.scrollTo(0, 0);
     };
     document.querySelectorAll('.back').forEach(b => b.addEventListener('click', e => {
+      if (b.dataset.to) return; // normal hash link
       e.preventDefault(); history.pushState('', '', location.pathname + location.search); show();
     }));
+    document.querySelectorAll('[data-close]').forEach(a => a.addEventListener('click', () => a.closest('dialog')?.close()));
     window.addEventListener('hashchange', show);
     show();
   })();
