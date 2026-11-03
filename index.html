@@ -1086,13 +1086,6 @@
   /* ===== Shadow nights: gigs from ShowPilot that one student can book, one-on-one ===== */
   const SHADOW_NIGHTS = [
     {
-      name: 'Halloween at Kirk',
-      date: '2026-10-31', start: '17:00', end: '22:00',
-      venue: 'The Spot on Kirk', city: 'Roanoke, VA',
-      lineup: [ { name: 'Clover-Lynn', role: 'Headliner' }, { name: 'Lamplight', role: 'Opener' }, { name: 'Ramona Martinez', role: 'Opener' } ],
-      img: ''
-    },
-    {
       name: 'Mojo Thunder at Martin\'s',
       date: '2026-11-07', start: '19:30', end: '01:30',
       venue: 'Martin\'s', city: 'Roanoke, VA',
@@ -1109,7 +1102,8 @@
     const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'], DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const base = BOOKING.base.replace(/\/+$/, '');
-    const upcoming = SHADOW_NIGHTS.filter(n => n.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+    const nowKey = `${today}T${pad(now.getHours())}:${pad(now.getMinutes())}`; // a night drops off once it has started
+    const upcoming = SHADOW_NIGHTS.filter(n => `${n.date}T${n.start}` > nowKey).sort((a, b) => a.date.localeCompare(b.date));
     if (!upcoming.length) { list.innerHTML = '<div class="panel n-empty">No shadow nights are posted right now. Check back soon, or book a consultation to ask about upcoming gigs.</div>'; return; }
     const card = n => {
       const [y, m, d] = n.date.split('-').map(Number), dt = new Date(y, m - 1, d);
@@ -1165,8 +1159,6 @@
 
   /* ===== Shows I've worked (for live multitrack requests). Newest can go anywhere; past dates only show up. ===== */
   const SHOWS_WORKED = [
-    { name: 'Halloween at Kirk', date: '2026-10-31', venue: 'The Spot on Kirk', city: 'Roanoke, VA',
-      bands: ['Clover-Lynn', 'Lamplight', 'Ramona Martinez'] },
     { name: 'Mojo Thunder at Martin\'s', date: '2026-11-07', venue: 'Martin\'s', city: 'Roanoke, VA',
       bands: ['Mojo Thunder'] }
   ];
