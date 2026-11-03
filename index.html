@@ -1091,6 +1091,13 @@
       venue: 'The Spot on Kirk', city: 'Roanoke, VA',
       lineup: [ { name: 'Clover-Lynn', role: 'Headliner' }, { name: 'Lamplight', role: 'Opener' }, { name: 'Ramona Martinez', role: 'Opener' } ],
       img: ''
+    },
+    {
+      name: 'Mojo Thunder at Martin\'s',
+      date: '2026-11-07', start: '19:30', end: '01:30',
+      venue: 'Martin\'s', city: 'Roanoke, VA',
+      lineup: [ { name: 'Mojo Thunder', role: 'Headliner' } ],
+      img: ''
     }
   ];
 
@@ -1106,7 +1113,8 @@
     if (!upcoming.length) { list.innerHTML = '<div class="panel n-empty">No shadow nights are posted right now. Check back soon, or book a consultation to ask about upcoming gigs.</div>'; return; }
     const card = n => {
       const [y, m, d] = n.date.split('-').map(Number), dt = new Date(y, m - 1, d);
-      const url = base ? `${base}/${BOOKING.types.shadow}?month=${n.date.slice(0, 7)}&date=${n.date}` : '';
+      const mins = (() => { const [a, b] = n.start.split(':').map(Number), [c, d] = n.end.split(':').map(Number); let m = (c * 60 + d) - (a * 60 + b); if (m <= 0) m += 1440; return m; })();
+      const url = base ? `${base}/${BOOKING.types.shadow}?month=${n.date.slice(0, 7)}&date=${n.date}&duration=${mins}` : '';
       const lineup = [...n.lineup].sort((a, b) => (b.role === 'Headliner') - (a.role === 'Headliner'));
       return `<article class="night">
         <div class="n-art">${n.img ? `<img src="${esc(n.img)}" alt="">` : ''}
@@ -1158,7 +1166,9 @@
   /* ===== Shows I've worked (for live multitrack requests). Newest can go anywhere; past dates only show up. ===== */
   const SHOWS_WORKED = [
     { name: 'Halloween at Kirk', date: '2026-10-31', venue: 'The Spot on Kirk', city: 'Roanoke, VA',
-      bands: ['Clover-Lynn', 'Lamplight', 'Ramona Martinez'] }
+      bands: ['Clover-Lynn', 'Lamplight', 'Ramona Martinez'] },
+    { name: 'Mojo Thunder at Martin\'s', date: '2026-11-07', venue: 'Martin\'s', city: 'Roanoke, VA',
+      bands: ['Mojo Thunder'] }
   ];
 
   (() => {
@@ -1197,8 +1207,11 @@
     document.querySelectorAll('.mt-opt').forEach(b => b.addEventListener('click', () => { st.opt = b.dataset.v; update(); }));
     if (!shows.length) { cal.innerHTML = '<p class="mt-picked">No shows are listed yet. Book an audio consultation and tell me which show you played.</p>'; update(); return; }
     const byDate = {}; shows.forEach(s => (byDate[s.date] = byDate[s.date] || []).push(s));
-    const months = [...new Set(shows.map(s => s.date.slice(0, 7)))];
-    let mi = months.length - 1;
+    // the past 12 months (or back to the first show, if earlier) through this month
+    const months = []; { const ey = now.getFullYear(), em = now.getMonth() + 1; let [y, m] = shows[0].date.split('-').map(Number);
+      const back = new Date(ey, em - 1 - 11, 1); if (y > back.getFullYear() || (y === back.getFullYear() && m > back.getMonth() + 1)) { y = back.getFullYear(); m = back.getMonth() + 1; }
+      while (y < ey || (y === ey && m <= em)) { months.push(`${y}-${pad(m)}`); m++; if (m > 12) { m = 1; y++; } } }
+    let mi = months.indexOf(shows[shows.length - 1].date.slice(0, 7)); if (mi < 0) mi = months.length - 1;
     cal.innerHTML = `<div class="ncal mt-ncal"><div class="ncal-head"><button type="button" class="ncal-nav" data-d="-1" aria-label="Previous month">&#8249;</button><h4 aria-live="polite"></h4><button type="button" class="ncal-nav" data-d="1" aria-label="Next month">&#8250;</button></div>
       <div class="ncal-dow" aria-hidden="true">${['S','M','T','W','T','F','S'].map(d => `<span>${d}</span>`).join('')}</div><div class="ncal-grid"></div>
       <div class="mt-list"></div></div>`;
