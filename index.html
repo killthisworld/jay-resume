@@ -356,6 +356,35 @@
   .mt-sum { font-size: .95rem; line-height: 1.5; margin-bottom: 6px; }
   .mt-go .cta[aria-disabled="true"] { opacity: .45; pointer-events: none; }
   @media (max-width: 620px) { .mt-opts { grid-template-columns: minmax(0, 1fr); } .mt-go { flex-direction: column; align-items: stretch; } .mt-step { padding: 16px 14px; } }
+
+  .mt-set { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: start; }
+  .mt-field { display: grid; gap: 10px; }
+  .mt-lab { font-weight: 600; font-size: .92rem; }
+  .mt-lab small { display: block; font-weight: 400; color: var(--faint); font-size: .76rem; margin-top: 2px; }
+  .mt-stepper { display: inline-flex; align-items: center; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--ring); background: rgba(238,240,255,.04); }
+  .mt-stepper button { width: 44px; height: 44px; border: 0; background: none; color: var(--ink); font-size: 1.3rem; cursor: pointer; border-radius: 50%; }
+  .mt-stepper button:hover { color: var(--accent); }
+  .mt-stepper output { min-width: 46px; text-align: center; font: 700 1.2rem var(--display); color: var(--accent); }
+  .mt-lens { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mt-lens .mt-chip { padding: 8px 13px; font-size: .84rem; }
+  .mt-price { margin-top: 18px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; padding: 14px 16px; border-radius: 14px; background: rgba(var(--accent-rgb),.10); box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb),.45); }
+  .mt-price span { font: 600 .62rem var(--hud); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .mt-price b { font: 800 1.5rem var(--display); color: #fff; text-shadow: 0 0 14px rgba(var(--accent-rgb),.8); }
+  .mt-price small { flex-basis: 100%; color: var(--faint); font-size: .78rem; }
+  .mt-table { margin-top: 14px; }
+  .mt-table summary { cursor: pointer; color: var(--accent); font-size: .86rem; font-weight: 600; }
+  .mt-tables { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .mt-tables table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  .mt-tables caption { text-align: left; font: 600 .62rem var(--hud); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+  .mt-tables caption small { letter-spacing: .06em; text-transform: none; }
+  .mt-tables td { padding: 7px 10px; border-top: 1px solid var(--ring); }
+  .mt-tables td:last-child { text-align: right; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .mt-eq { margin-top: 10px; font-size: .78rem; color: var(--faint); }
+  .mt-op-p { display: block; font-style: normal; margin-top: 2px; font: 700 .9rem var(--display); color: var(--accent); }
+  .mt-op-p:empty { display: none; }
+  .mt-sum-p { color: var(--accent); }
+  .mt-fine { font-size: .76rem; line-height: 1.55; color: var(--faint); text-align: center; max-width: 620px; margin: 4px auto 0; }
+  @media (max-width: 620px) { .mt-set, .mt-tables { grid-template-columns: minmax(0, 1fr); } }
   /* two-planet home */
   main.system { max-width: 760px; margin-top: 64px; }
   main.system .planet { --size: clamp(160px, 21vw, 200px); }
@@ -940,20 +969,38 @@
       <p class="mt-picked" id="mt-show-label">Choose a show first.</p>
       <div class="mt-chips" id="mt-bands" role="radiogroup" aria-label="Your band"></div>
     </section>
+    <section class="panel mt-step" id="mt-s2b" aria-disabled="true">
+      <p class="mt-n"><b>3</b> Your set</p>
+      <div class="mt-set">
+        <div class="mt-field"><span class="mt-lab">Instruments <small>a drum kit counts as 3</small></span>
+          <div class="mt-stepper"><button type="button" id="mt-minus" aria-label="Fewer instruments">&minus;</button><output id="mt-inst" aria-live="polite">4</output><button type="button" id="mt-plus" aria-label="More instruments">+</button></div></div>
+        <div class="mt-field"><span class="mt-lab">Set length</span>
+          <div class="mt-lens" id="mt-lens" role="radiogroup" aria-label="Set length"></div></div>
+      </div>
+      <div class="mt-price" id="mt-price"><span>Recording price</span><b id="mt-price-v">&mdash;</b><small>Full set + every individual stem</small></div>
+      <details class="mt-table"><summary>See the full price list</summary>
+        <div class="mt-tables">
+          <table><caption>Instruments <small>(drum kit = 3)</small></caption><tbody id="mt-t-inst"></tbody></table>
+          <table><caption>Set length</caption><tbody id="mt-t-len"></tbody></table>
+        </div>
+        <p class="mt-eq">Instruments + set length = your recording price. Mixing and mastering are quoted separately.</p>
+      </details>
+    </section>
     <section class="panel mt-step" id="mt-s3" aria-disabled="true">
-      <p class="mt-n"><b>3</b> What do you want?</p>
+      <p class="mt-n"><b>4</b> What do you want?</p>
       <div class="mt-opts" role="radiogroup" aria-label="What you want">
-        <button type="button" class="mt-opt" data-v="Stems only" role="radio" aria-checked="false"><b>Stems only</b><span>Every channel from the board as its own track, for you or your engineer to mix.</span></button>
-        <button type="button" class="mt-opt" data-v="Left/right stereo only" role="radio" aria-checked="false"><b>Left / right stereo</b><span>The stereo recording straight from the board, as it sounded in the room.</span></button>
-        <button type="button" class="mt-opt" data-v="Mixing" role="radio" aria-checked="false"><b>Mixing</b><span>I mix your set from the multitracks.</span></button>
-        <button type="button" class="mt-opt" data-v="Full mix + master" role="radio" aria-checked="false"><b>Full mix + master</b><span>Mixed and mastered, ready to release.</span></button>
+        <button type="button" class="mt-opt" data-v="Stems only" role="radio" aria-checked="false"><b>Stems only<em class="mt-op-p"></em></b><span>Every channel from the board as its own track, for you or your engineer to mix.</span></button>
+        <button type="button" class="mt-opt" data-v="Left/right stereo only" role="radio" aria-checked="false"><b>Left / right stereo<em class="mt-op-p"></em></b><span>The stereo recording straight from the board, as it sounded in the room.</span></button>
+        <button type="button" class="mt-opt" data-v="Mixing" role="radio" aria-checked="false"><b>Mixing<em class="mt-op-p"></em></b><span>I mix your set from the multitracks.</span></button>
+        <button type="button" class="mt-opt" data-v="Full mix + master" role="radio" aria-checked="false"><b>Full mix + master<em class="mt-op-p"></em></b><span>Mixed and mastered, ready to release.</span></button>
       </div>
     </section>
     <section class="panel mt-step mt-go" id="mt-s4" aria-disabled="true">
-      <div><p class="mt-n"><b>4</b> Send your request</p><p class="mt-sum" id="mt-sum">Finish the steps above.</p>
-      <p class="price-note">You'll add your name and email and pick the date you'd like it by. I'll confirm the band is cleared for the audio, then reply with a price.</p></div>
+      <div><p class="mt-n"><b>5</b> Send your request</p><p class="mt-sum" id="mt-sum">Finish the steps above.</p>
+      <p class="price-note">You'll add your name and email and pick the date you'd like it by. Stems are ready within 48 hours and delivered by Google Drive. Payment is due once your files are ready.</p></div>
       <a class="cta" id="mt-send" href="#" aria-disabled="true">Send request &#8599;</a>
     </section>
+    <p class="mt-fine">Your band owns the unmixed stems and full-length recording of your set and can use them however you like, with no extra payments. Please credit Klean Studios when you post them. Files stay on the shared Google Drive for at least one month, so download them once they're ready.</p>
   </div>
 </div>
 
@@ -1171,17 +1218,27 @@
     const fmt = d => { const [y, m, dd] = d.split('-').map(Number); return `${MONTH[m - 1].slice(0, 3)} ${dd}, ${y}`; };
     const shows = SHOWS_WORKED.filter(s => s.date <= today).sort((a, b) => a.date.localeCompare(b.date));
     const cal = document.getElementById('mt-cal');
-    const st = { show: null, band: null, opt: null };
-    const s2 = document.getElementById('mt-s2'), s3 = document.getElementById('mt-s3'), s4 = document.getElementById('mt-s4');
+    const INST = [[4, 10], [8, 20], [12, 30], [16, 40]];
+    const LENS = [['30 minutes or less', 10], ['31 - 45 minutes', 15], ['46 - 60 minutes', 20], ['61 - 90 minutes', 30], ['91 - 120 minutes', 40], ['120 - 180 minutes', 50]];
+    const instPrice = n => { const t = INST.find(([max]) => n <= max); return t ? t[1] : null; };
+    const st = { show: null, band: null, opt: null, inst: 4, len: null };
+    const s2 = document.getElementById('mt-s2'), s2b = document.getElementById('mt-s2b'), s3 = document.getElementById('mt-s3'), s4 = document.getElementById('mt-s4');
     const bandsEl = document.getElementById('mt-bands'), label = document.getElementById('mt-show-label'), sum = document.getElementById('mt-sum'), send = document.getElementById('mt-send');
     const base = BOOKING.base.replace(/\/+$/, '');
+    const recPrice = () => { const a = instPrice(st.inst), b = st.len ? LENS.find(l => l[0] === st.len)[1] : null; return a != null && b != null ? a + b : null; };
+    const priceFor = (opt, r) => r == null ? null : (opt === 'Mixing' ? `$${r} + mixing quote` : opt === 'Full mix + master' ? `$${r} + mix & master quote` : `$${r}`);
     const update = () => {
-      s2.setAttribute('aria-disabled', !st.show); s3.setAttribute('aria-disabled', !st.band); s4.setAttribute('aria-disabled', !st.opt);
-      document.querySelectorAll('.mt-opt').forEach(b => b.setAttribute('aria-checked', b.dataset.v === st.opt));
-      if (st.show && st.band && st.opt) {
+      const r = recPrice(), big = st.inst > 16;
+      s2.setAttribute('aria-disabled', !st.show); s2b.setAttribute('aria-disabled', !st.band); s3.setAttribute('aria-disabled', !(st.band && st.len)); s4.setAttribute('aria-disabled', !st.opt);
+      document.getElementById('mt-inst').textContent = big ? '17+' : st.inst;
+      document.getElementById('mt-price-v').textContent = big ? 'Request a quote' : r == null ? 'Pick your set length' : `$${r}`;
+      document.querySelectorAll('.mt-len').forEach(b => b.setAttribute('aria-checked', b.dataset.v === st.len));
+      document.querySelectorAll('.mt-opt').forEach(b => { b.setAttribute('aria-checked', b.dataset.v === st.opt); const p = big ? 'Quote' : priceFor(b.dataset.v, r); b.querySelector('.mt-op-p').textContent = p || ''; });
+      if (st.show && st.band && st.len && st.opt) {
         const showTxt = `${st.show.name} · ${fmt(st.show.date)} · ${st.show.venue}`;
-        sum.innerHTML = `<b>${esc(st.band)}</b> at ${esc(showTxt)}<br>${esc(st.opt)}`;
-        const q = new URLSearchParams({ show: showTxt, band: st.band, deliverable: st.opt });
+        const price = big ? 'Request a quote (17+ instruments)' : priceFor(st.opt, r);
+        sum.innerHTML = `<b>${esc(st.band)}</b><br>${esc(showTxt)}<br>${esc(st.opt)} &middot; <b class="mt-sum-p">${esc(price)}</b>`;
+        const q = new URLSearchParams({ show: showTxt, band: st.band, deliverable: st.opt, instruments: big ? '17' : String(st.inst), 'set-length': st.len, price });
         send.href = base ? `${base}/${BOOKING.types.multitracks}?${q}` : '#'; send.target = '_blank'; send.rel = 'noopener'; send.removeAttribute('aria-disabled');
       } else { sum.textContent = 'Finish the steps above.'; send.href = '#'; send.setAttribute('aria-disabled', 'true'); send.removeAttribute('target'); }
     };
@@ -1197,6 +1254,13 @@
       update();
     };
     document.querySelectorAll('.mt-opt').forEach(b => b.addEventListener('click', () => { st.opt = b.dataset.v; update(); }));
+    const lens = document.getElementById('mt-lens');
+    lens.innerHTML = LENS.map(([l]) => `<button type="button" class="mt-chip mt-len" role="radio" aria-checked="false" data-v="${l}">${l.replace(' minutes', ' min').replace(' or less', ' or less')}</button>`).join('');
+    lens.querySelectorAll('.mt-len').forEach(b => b.addEventListener('click', () => { st.len = b.dataset.v; update(); }));
+    document.getElementById('mt-minus').addEventListener('click', () => { st.inst = Math.max(1, Math.min(st.inst, 17) - 1); update(); });
+    document.getElementById('mt-plus').addEventListener('click', () => { st.inst = Math.min(17, st.inst + 1); update(); });
+    document.getElementById('mt-t-inst').innerHTML = [['1 - 4', 10], ['5 - 8', 20], ['9 - 12', 30], ['13 - 16', 40]].map(([a, b]) => `<tr><td>${a}</td><td>$${b}</td></tr>`).join('') + '<tr><td>17+</td><td>Quote</td></tr>';
+    document.getElementById('mt-t-len').innerHTML = LENS.map(([a, b]) => `<tr><td>${a}</td><td>$${b}</td></tr>`).join('');
     if (!shows.length) { cal.innerHTML = '<p class="mt-picked">No shows are listed yet. Book an audio consultation and tell me which show you played.</p>'; update(); return; }
     const byDate = {}; shows.forEach(s => (byDate[s.date] = byDate[s.date] || []).push(s));
     // the past 12 months (or back to the first show, if earlier) through this month
