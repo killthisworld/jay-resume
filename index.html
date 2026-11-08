@@ -985,7 +985,7 @@
     <section class="panel mt-step" id="mt-s2b" aria-disabled="true">
       <p class="mt-n"><b>3</b> Your set</p>
       <div class="mt-set">
-        <div class="mt-field"><span class="mt-lab">Instruments <small>a drum kit counts as 3</small></span>
+        <div class="mt-field" id="mt-inst-field"><span class="mt-lab">Instruments <small>a drum kit counts as 3</small></span>
           <div class="mt-stepper"><button type="button" id="mt-minus" aria-label="Fewer instruments">&minus;</button><output id="mt-inst" aria-live="polite">4</output><button type="button" id="mt-plus" aria-label="More instruments">+</button></div></div>
         <div class="mt-field"><span class="mt-lab">Set length</span>
           <div class="mt-lens" id="mt-lens" role="radiogroup" aria-label="Set length"></div></div>
@@ -996,7 +996,7 @@
           <table><caption>Instruments <small>(drum kit = 3)</small></caption><tbody id="mt-t-inst"></tbody></table>
           <table><caption>Set length</caption><tbody id="mt-t-len"></tbody></table>
         </div>
-        <p class="mt-eq">Instruments + set length = your recording price. Mixing and mastering are quoted separately.</p>
+        <p class="mt-eq">Instruments + set length = your multitrack recording price. Mixing and mastering are quoted separately. Left / right stereo only is $10 for a set up to 1 hour, plus $10 for each additional hour.</p>
       </details>
     </section>
     <section class="panel mt-step" id="mt-s3" aria-disabled="true">
@@ -1240,25 +1240,29 @@
     const bandsEl = document.getElementById('mt-bands'), label = document.getElementById('mt-show-label'), sum = document.getElementById('mt-sum'), send = document.getElementById('mt-send');
     const base = BOOKING.base.replace(/\/+$/, '');
     const recPrice = () => { const a = instPrice(st.inst), b = st.len ? LENS.find(l => l[0] === st.len)[1] : null; return a != null && b != null ? a + b : null; };
-    const priceFor = (opt, r) => r == null ? null : (opt === 'Mixing' ? `$${r} + mixing quote` : opt === 'Full mix + master' ? `$${r} + mix & master quote` : `$${r}`);
+    const LR_HOURS = [1, 1, 1, 2, 2, 3]; // hours per set-length tier, each started hour counts
+    const lrPrice = () => st.len ? 10 * LR_HOURS[LENS.findIndex(l => l[0] === st.len)] : null;
+    const priceFor = (opt, r) => opt === 'Left/right stereo only' ? (lrPrice() == null ? null : `$${lrPrice()}`) : r == null ? null : (opt === 'Mixing' ? `$${r} + mixing quote` : opt === 'Full mix + master' ? `$${r} + mix & master quote` : `$${r}`);
     const update = () => {
       const r = recPrice(), big = st.inst > 16;
       s2.setAttribute('aria-disabled', !st.show); s2b.setAttribute('aria-disabled', !(st.band && st.pre)); s3.setAttribute('aria-disabled', !(st.band && st.pre && st.len)); s4.setAttribute('aria-disabled', !st.opt);
       document.getElementById('mt-inst').textContent = big ? '17+' : st.inst;
-      document.getElementById('mt-price-v').textContent = big ? 'Request a quote' : r == null ? 'Pick your set length' : `$${r}`;
+      const lrView = st.pre === 'No' || st.opt === 'Left/right stereo only', lr = lrPrice();
+      document.getElementById('mt-inst-field').hidden = st.pre === 'No';
+      document.getElementById('mt-price-v').textContent = lrView ? (lr == null ? 'Pick your set length' : `$${lr}`) : big ? 'Request a quote' : r == null ? 'Pick your set length' : `$${r}`;
       document.querySelectorAll('.mt-len').forEach(b => b.setAttribute('aria-checked', b.dataset.v === st.len));
       const lrOnly = st.pre === 'No'; if (lrOnly && st.opt && st.opt !== 'Left/right stereo only') st.opt = null;
       document.getElementById('mt-pre-wrap').hidden = !st.band;
       document.querySelectorAll('#mt-pre .mt-chip').forEach(c => c.setAttribute('aria-checked', c.dataset.v === st.pre));
-      document.getElementById('mt-price-sub').textContent = lrOnly ? 'Left / right stereo recording of your full set' : 'Full set + every individual stem';
+      document.getElementById('mt-price-sub').textContent = lrView ? 'Left / right stereo of your full set · $10 per hour' : 'Full set + every individual stem';
       document.getElementById('mt-pre-note').hidden = !lrOnly; document.getElementById('mt-opts-note').hidden = !lrOnly;
       document.querySelectorAll('.mt-opt').forEach(b => { const off = lrOnly && b.dataset.v !== 'Left/right stereo only'; b.disabled = off; b.classList.toggle('off', off);
-        b.setAttribute('aria-checked', b.dataset.v === st.opt); const p = off ? 'Not available' : big ? 'Quote' : priceFor(b.dataset.v, r); b.querySelector('.mt-op-p').textContent = p || ''; });
+        b.setAttribute('aria-checked', b.dataset.v === st.opt); const p = off ? 'Not available' : (big && b.dataset.v !== 'Left/right stereo only') ? 'Quote' : priceFor(b.dataset.v, r); b.querySelector('.mt-op-p').textContent = p || ''; });
       if (st.show && st.band && st.pre && st.len && st.opt) {
         const showTxt = `${st.show.name} · ${fmt(st.show.date)} · ${st.show.venue}`;
-        const price = big ? 'Request a quote (17+ instruments)' : priceFor(st.opt, r);
+        const price = (big && st.opt !== 'Left/right stereo only') ? 'Request a quote (17+ instruments)' : priceFor(st.opt, r);
         sum.innerHTML = `<b>${esc(st.band)}</b><br>${esc(showTxt)}<br>${esc(st.opt)} &middot; <b class="mt-sum-p">${esc(price)}</b>`;
-        const q = new URLSearchParams({ show: showTxt, band: st.band, preordered: st.pre, deliverable: st.opt, instruments: big ? '17' : String(st.inst), 'set-length': st.len, price });
+        const q = new URLSearchParams({ show: showTxt, band: st.band, preordered: st.pre, deliverable: st.opt, instruments: st.pre === 'No' ? '0' : big ? '17' : String(st.inst), 'set-length': st.len, price });
         send.href = base ? `${base}/${BOOKING.types.multitracks}?${q}` : '#'; send.target = '_blank'; send.rel = 'noopener'; send.removeAttribute('aria-disabled');
       } else { sum.textContent = 'Finish the steps above.'; send.href = '#'; send.setAttribute('aria-disabled', 'true'); send.removeAttribute('target'); }
     };
